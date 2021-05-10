@@ -81,30 +81,29 @@ alert( * ! * uzytkownik.imie * /!*); /
 / 'Piotr', zmiany są widoczne z referencji "uzytkownik"
 ```
 
-It's as if we had a cabinet with two keys and used one of them (`admin`) to get into it and make changes. Then, if we
-later use another key (`user`), we are still opening the same cabinet and can access the changed contents.
+To jest tak jakbyśmy mieli szafkę z dwoma kluczami i użyli jednego z nich (admin) aby dostać się do niej i dokonać zmian. Następnie, jeśli użyjemy innego klucza (uzytkownik), nadal możemy otworzyć tę samą szafkę i dostać się do zmodyfikowanej zawartości.
 
-## Comparison by reference
+## Porównanie przez referencję
 
-Two objects are equal only if they are the same object.
+Dwa obiekty są równe tylko wtedy, kiedy są tym samym obiektem.
 
-For instance, here `a` and `b` reference the same object, thus they are equal:
+W poniższym przypadku `a` i `b` są referencjami do tego samego obiektu, stąd są równe:
 
 ```js run
 let a = {};
-let b = a; // copy the reference
+let b = a; // kopiowanie referencji
 
-alert(a == b); // true, both variables reference the same object
-alert(a === b); // true
+alert(a == b); // prawda, prawda, jeśli obydwie zmienne są referencjami na ten sam obiekt
+alert(a === b); // prawda
 ```
 
-And here two independent objects are not equal, even though they look alike (both are empty):
+W tym przypadku natomiast dwa niezależne obiekty nie są sobie równe, mimo że wyglądają na takie (obydwa są puste):
 
 ```js run
 let a = {};
-let b = {}; // two independent objects
+let b = {}; // dwa niezależne obiekty
 
-alert(a == b); // false
+alert(a == b); // fałsz
 ```
 
 For comparisons like `obj1 > obj2` or for a comparison against a primitive `obj == 5`, objects are converted to
