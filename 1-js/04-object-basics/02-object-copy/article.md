@@ -8,11 +8,11 @@ kopiowane "jako cała wartość".
 
 Zacznijmy od typu prymitywnego, takiego jak łańcuch znaków.
 
-Poniżej kopiujemy wartość zmiennej `wiadomosc` do `wyrazenie`:
+Poniżej kopiujemy wartość zmiennej `message` do `phrase`:
 
 ```js
-let wiadomosc = "Cześć!";
-let wyrazenie = wiadomosc;
+let message = "Cześć!";
+let phrase = message;
 ```
 
 W rezultacie otrzymujemy dwie niezależne zmienne, przechowujące łańcuch znaków `"Cześć!"`.
@@ -29,8 +29,8 @@ niego**
 Spójrzmy na przykład takiej zmiennej:
 
 ```js
-let uzytkownik = {
-  imie: "Jan",
+let user = {
+  name: "Jan",
 };
 ```
 
@@ -55,7 +55,7 @@ Na przykład:
 ```js no-beautify
 let uzytkownik = { imie: "Jan" };
 
-let administrator = uzytkownik; // copy the reference
+let administrator = uzytkownik; // skopiuj referencję
 ```
 
 Teraz mamy dwie zmienne, przechowujące referencję do tego samego obiektu:
@@ -67,18 +67,18 @@ Jak widać na obrazku, nadal mamy jeden obiekt, ale tym razem z dwiema zmiennymi
 Możemy skorzystać z obydwu zmiennych by dostać się do obiektu i zmodyfikować jego zawartość:
 
 ```js run
-let uzytkownik = { imie: 'Jan' };
+let user = { name: 'Jan' };
 
-let administrator = uzytkownik;
+let admin = user;
 
 *
 ! *
-administrator.imie = 'Piotr'; // zmiana przez referencję "administrator"
+admin.name = 'Piotr'; // zmiana przez referencję "administrator"
 *
 /!*
 
-alert( * ! * uzytkownik.imie * /!*); /
-/ 'Piotr', zmiany są widoczne z referencji "uzytkownik"
+alert( * ! * admin.imie * /!*); /
+/ 'Piotr', zmiany są widoczne z referencji "user"
 ```
 
 To jest tak jakbyśmy mieli szafkę z dwoma kluczami i użyli jednego z nich (admin) aby dostać się do niej i dokonać zmian. Następnie, jeśli użyjemy innego klucza (uzytkownik), nadal możemy otworzyć tę samą szafkę i dostać się do zmodyfikowanej zawartości.
@@ -106,66 +106,61 @@ let b = {}; // dwa niezależne obiekty
 alert(a == b); // fałsz
 ```
 
-For comparisons like `obj1 > obj2` or for a comparison against a primitive `obj == 5`, objects are converted to
-primitives. We'll study how object conversions work very soon, but to tell the truth, such comparisons are needed very
-rarely -- usually they appear as a result of a programming mistake.
+Przy porównaniach takich jak `obj1 > obj2` i przy porównaniach z typami prymitywnymi obiekty konwertowane są do typu prymitywnego. Wkrótce będziemy się uczyli jak działają konwersje obiektów, ale szczerze powiedziawszy, takie porównania potrzebne są bardzo rzadko -- zazwyczaj pojawiają się jako rezultat błędu programisty.
 
-## Cloning and merging, Object.assign [#cloning-and-merging-object-assign]
+## Klonowanie i łączenie, Object.assign [#cloning-and-merging-object-assign]
 
-So, copying an object variable creates one more reference to the same object.
+Więc, kopiowanie zmiennej obiektowej tworzy nową referencję do tego samego obiektu
 
-But what if we need to duplicate an object? Create an independent copy, a clone?
+Co jeśli potrzebujemy powielić obiekt? Powinniśmy stworzyć niezależną kopię, klon?
 
-That's also doable, but a little bit more difficult, because there's no built-in method for that in JavaScript. But
-there is rarely a need -- copying by reference is good most of the time.
+Jest to wykonalne, ale trochę trudniejsze, ponieważ nie ma w JavaScript wbudowanej metody do tego. To jest jednak rzadko potrzebne -- kopiowanie przez referencję jest zazwyczaj wystarczające.
 
-But if we really want that, then we need to create a new object and replicate the structure of the existing one by
-iterating over its properties and copying them on the primitive level.
+Jeśli jednak naprawdę potrzebujemy sklonować obiekt, możemy utworzyć nowy obiekt i zreplikować strukturę istniejącego obiektu poprzez przeiterowanie przez jego właściwości i skopiowanie ich na poziomie prymitywnych zmiennych.
 
-Like this:
+Jak w poniższym przykładzie:
 
 ```js run
 let user = {
-  name: "John",
+  name: "Jan",
   age: 30
 };
 
 *
 ! *
 let
-clone = {}; // the new empty object
+clone = {}; // nowy, pusty obiekt
 
-// let's copy all user properties into it
+// skopiujmy do niego wszystkie właściwości obiektu user
 for (let key in user) {
   clone[key] = user[key];
 }
 *
 /!*
 
-// now clone is a fully independent object with the same content
-clone.name = "Pete"; // changed the data in it
+// teraz sklonujmy w pełni niezależny obiekt z tą samą treścią
+clone.name = "Piotr"; // zmienione dane w nowym obiekcie
 
-alert(user.name); // still John in the original object
+alert(user.name); // Jan nadal jest w oryginalnym obiekcie
 ```
 
-Also we can use the method [Object.assign](mdn:js/Object/assign) for that.
+W tym celu możemy również użyć metody [Object.assign](mdn:js/Object/assign).
 
-The syntax is:
+Jej składnia jest następująca:
 
 ```js
 Object.assign(dest, [src1, src2, src3...])
 ```
 
-- The first argument `dest` is a target object.
-- Further arguments `src1, ..., srcN` (can be as many as needed) are source objects.
-- It copies the properties of all source objects `src1, ..., srcN` into the target `dest`. In other words, properties of
-  all arguments starting from the second are copied into the first object.
-- The call returns `dest`.
+- Pierwszy argument `dest` jest docelowym obiektem.
+- Kolejne argumenty `src1, ..., srcN` (może być ich dowolnie wiele) są obiektami źródłowymi.
+- Metoda kopiuje właściwości wszystkich obiektów źródłowych `src1, ..., srcN` do obiektu docelowego `dest`. Innymi słowy, właściwości wszystkich argumentów począwszy od drugiego argumentu są kopiowane do pierwszego obiektu.
+- Wywołanie metody zwraca `dest`.
 
-For instance, we can use it to merge several objects into one:
+Możemy na przykład użyć tej metody do złączenia kilku obiektów w jeden:
 
 ```js
-let user = { name: "John" };
+let user = { name: "Jan" };
 
 let permissions1 = { canView: true };
 let permissions2 = { canEdit: true };
