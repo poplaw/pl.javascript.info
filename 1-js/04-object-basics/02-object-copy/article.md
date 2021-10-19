@@ -167,25 +167,25 @@ let permissions2 = { canEdit: true };
 
 *
 ! *
-// copies all properties from permissions1 and permissions2 into user
+// Kopiowanie wszystkich właściwości z permissions1 i permissions 2 do user
 Object.assign(user, permissions1, permissions2);
 *
 /!*
 
-// now user = { name: "John", canView: true, canEdit: true }
+// teraz user = { name: "John", canView: true, canEdit: true }
 ```
 
-If the copied property name already exists, it gets overwritten:
+Jeśli skopiowana właściwość już istnieje, zostaje ona nadpisana:
 
 ```js run
 let user = { name: "John" };
 
 Object.assign(user, { name: "Pete" });
 
-alert(user.name); // now user = { name: "Pete" }
+alert(user.name); // teraz user = { name: "Pete" }
 ```
 
-We also can use `Object.assign` to replace `for..in` loop for simple cloning:
+Możemy również użyć `Object.assign` zamiast pętli `for..in` w celu prostego klonowania:
 
 ```js
 let user = {
@@ -201,17 +201,15 @@ clone = Object.assign({}, user);
 /!*
 ```
 
-It copies all properties of `user` into the empty object and returns it.
+Powyższy kod kopiuje wszystkie właściwości zmiennej `user` do pustego obiektu i zwraca go.
 
-There are also other methods of cloning an object, e.g. using
-the [spread syntax](info:rest-parameters-spread) `clone = {...user}`, covered later in the tutorial.
+Istnieją również inne metody klonowania obiektów, np używając [składni rozwinięcia](info:rest-parameters-spread) `clone = {...user}`, którymi zajmiemy się później w tym samouczku.
 
-## Nested cloning
+## Zagnieżdżone klonowanie
 
-Until now we assumed that all properties of `user` are primitive. But properties can be references to other objects.
-What to do with them?
+Dotąd zakładaliśmy, że wszystkie właściwości obiektu `user` są typami prymitywnymi. Właściwości jednak mogą być referencjami do innych obiektów. Jak powinniśmy się nimi zająć?
 
-Like this:
+W następujący sposób:
 
 ```js run
 let user = {
@@ -225,10 +223,9 @@ let user = {
 alert(user.sizes.height); // 182
 ```
 
-Now it's not enough to copy `clone.sizes = user.sizes`, because the `user.sizes` is an object, it will be copied by
-reference. So `clone` and `user` will share the same sizes:
+Teraz nie wystarczy skopiować `clone.sizes = user.sizes`, ponieważ `user.sizes` jest obiektem, który zostanie skopiowany przez referencję. Zatem `clone` i `user` będą współdzieliły te same obiekty `sizes`.
 
-Like this:
+Jak w poniższym przykładzie:
 
 ```js run
 let user = {
@@ -241,21 +238,18 @@ let user = {
 
 let clone = Object.assign({}, user);
 
-alert(user.sizes === clone.sizes); // true, same object
+alert(user.sizes === clone.sizes); // prawda, ten sam obiekt
 
-// user and clone share sizes
-user.sizes.width++; // change a property from one place
-alert(clone.sizes.width); // 51, see the result from the other one
+// user i clone współdzielą sizes
+user.sizes.width++; // zmiana właściwości pierwszego obiektu
+alert(clone.sizes.width); // 51, rezultat z drugiego obiektu
 ```
 
-To fix that, we should use a cloning loop that examines each value of `user[key]` and, if it's an object, then replicate
-its structure as well. That is called a "deep cloning".
+Aby to naprawić, powinniśmy użyć pętli klonującej, która sprawdza każdą wartość z `user[key]` i, jeśli jest to obiekt, zreplikować również jego strukturę. Zwiemy to "deep cloning".
 
-We can use recursion to implement it. Or, to not reinvent the wheel, take an existing implementation, for
-instance [\_.cloneDeep(obj)](https://lodash.com/docs#cloneDeep) from the JavaScript library [lodash](https://lodash.com)
-.
+W celu zaimplementowania tej operacji możemy użyć rekurencji. Aby nie wynajdywać koła na nowo, możemy użyć istniejącej implementacji, na przykład [\_.cloneDeep(obj)](https://lodash.com/docs#cloneDeep) z biblioteki JavaScript [lodash](https://lodash.com)
 
-````smart header="Const objects can be modified"
+````smart header="Stałe obiekty mogą być modyfikowane"
 An important side effect of storing objects as references is that an object declared as `const` *can* be modified.
 
 For instance:
